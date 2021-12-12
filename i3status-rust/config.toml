@@ -1,0 +1,152 @@
+#theme = "nord-dark"
+
+theme = "base16-mellow-purple"
+icons = "awesome5"
+#separator ="\ue0b2"
+#separator_bg = "auto"
+#separator_fg = "auto"
+
+
+
+[[block]]
+block = "cpu"
+icons_format = "{icon} "
+interval = 1
+format = "{utilization}\ue0b7 {frequency}"
+
+#[[block]]
+#block = "custom"
+#icons_format = "{icon}"
+#command = "~/.config/i3/scripts/cpu.sh"
+
+[[block]]
+block = "load"
+icons_format = "{icon} "
+interval = 1
+format = "{1m}"
+
+
+[[block]]
+block = "memory"
+icons_format = "{icon}"
+display_type = "memory"
+format_mem = "{mem_used_percents}"
+format_swap = "{swap_used_percents}"
+[block.theme_overrides]
+info_bg = "#010048"
+
+
+[[block]]
+block = "pacman"
+icons_format = "{icon} "
+interval = 600
+format = "{pacman} +{aur} \ue0b7{both}"
+format_singular = "{both} update available"
+format_up_to_date = "system up to date"
+critical_updates_regex = "(linux|linux-lts|linux-zen)"
+# aur_command should output available updates to stdout (ie behave as echo -ne "update\n")
+aur_command = "trizen -Qua"
+[block.theme_overrides]
+info_fg = "#ffffff"
+
+
+[[block]]
+block = "disk_space"
+icons_format = "{icon}"
+path = "/"
+alias = "root"
+info_type = "available"
+#format = "\uf292{used}"
+format = "\ue614{used}"
+unit = "GB"
+interval = 20
+warning = 20.0
+alert = 10.0
+[block.theme_overrides]
+info_bg = "#2e4fe1"
+idle_bg = "#2e4fe1"
+idle_fg = "#cfe2f3"
+
+[[block]]
+block = "disk_space"
+#icons_format = "{icon}"
+path = "/home"
+alias = "home"
+info_type = "available"
+format = "\uf7dd{used}"
+unit = "GB"
+interval = 20
+warning = 20.0
+alert = 10.0
+[block.theme_overrides]
+info_bg = "#2e4fe1"
+idle_bg = "#0a5d00"
+idle_fg = "#ddffc3"
+
+[[block]]
+block = "net"
+icons_format = "{icon}"
+device = "wlo1"
+format = " {signal_strength}"
+interval = 5
+
+[[block]]
+block = "custom"
+shell = "sh"
+#icons_format = "{icon}"
+command = "~/.config/i3/scripts/nordvpn-status.sh"
+interval = 10
+
+
+[[block]]
+block = "backlight"
+icons_format = "{icon} "
+minimum = 15
+maximum = 100
+cycle = [100, 50, 10, 50]
+[block.theme_overrides]
+info_bg = "#2e4fe1"
+idle_bg = "#ffbf00"
+idle_fg = "#603101"
+
+[[block]]
+block = "sound"
+icons_format = "{icon} "
+format ="{volume}"
+driver = "pulseaudio"
+[block.mappings]
+show_volume_when_muted = "true"
+
+[[block]]
+block = "battery"
+icons_format = "{icon} "
+driver = "upower"
+interval = 10
+format = " {percentage} \ue0b7 {time}"
+
+#[[block]]
+#block = "custom"
+#icons_format = "{icon} "
+#command = ''' curl --max-time 3 --silent 'http://192.168.1.2/admin/api.php?summary' | jq '{icon:"pi_hole", state: "\(.status | sub("enabled";"Good") | sub("disabled";"Warning"))", text: "\(.status | sub("enabled";"Up") | sub("disabled";"Down")) \(.ads_blocked_today)"}' '''
+#json = true
+#on_click = "xdg-open http://pi.hole"
+#interval = 180
+#[block.theme_overrides]
+#idle_bg = "#C51A4A"
+#info_bg = "#C51A4A"
+#good_bg = "#C51A4A"
+#good_fg = "#6CC04A"
+
+[[block]]
+block = "time"
+icons_format = "{icon} "
+interval = 5
+format = "%R"
+[block.theme_overrides]
+idle_bg = "#4a266c"
+
+[[block]]
+block = "custom"
+command = "~/.config/polybar/scripts/pihole-status.sh"
+interval = 20
+

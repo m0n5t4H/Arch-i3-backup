@@ -1,0 +1,108 @@
+#!/usr/bin/env sh
+#----------------
+#  i3-system-scripts
+#----------------
+# -> Screenshot
+# -> Color Picker
+# -> Volume up
+# -> Volume Down
+# -> Volume Mute/toggle
+# -> Caps Lock
+# -> Touchpad
+# -> Reload/logoff i3wm
+# -> Reload Dunst
+# -> Toggle Dunst
+# -> Backlight up
+# -> Backlight down
+
+# :: Functions
+#		|
+#    Screenshot
+
+cap_scr(){
+	flameshot gui -r -p $HOME/Pictures/Screenshots > /tmp/latest.png && dunstify -a Screenshot -h string:x-dunst-stack-tag:screenshot "Captured"
+}
+
+cap_col(){
+    prev_file="/tmp/preview.png"
+    window_size="64x64"
+    clipped="xclip -o -selection clipboard"
+    xcolor | xclip -selection clipboard
+    convert -size "$window_size" xc:$(${clipped}) -flatten $prev_file
+    dunstify -a "Color Picker" -t 2500 "Hex Value Copied" "$(${clipped})"
+}
+
+# :: Volume
+
+vol_up(){
+    pamixer -i 5 && dunstify -a System -t 1000 -h string:x-dunst-stack-tag:volume -h int:value:$(pamixer --get-volume) "Volume: $(pamixer --get-volume)%" 
+}
+
+vol_down(){
+    pamixer -d 5 && dunstify -a System -t 1000 -h string:x-dunst-stack-tag:volume -h int:value:$(pamixer --get-volume) "Volume: $(pamixer --get-volume)%"
+}
+
+vol_tog(){
+    pamixer -t && if pamixer --get-mute; then dunstify -a System -t 1000 -h string:x-dunst-stack-tag:volume "Audio Muted"; else dunstify -a System -t 1000 -h string:x-dunst-stack-tag:volume "Audio Unmuted"; fi
+}
+
+# :: System Details
+
+notif_caps(){
+    sleep 0.2 && if [ "$(xset q | grep Caps | awk '{print $4}')" = 'on' ]; then dunstify -a System -t 1200 -h string:x-dunst-stack-tag:caps "Caps Lock Enabled"; else dunstify -a System -t 1200 -h string:x-dunst-stack-tag:caps "Caps Lock Disabled"; fi
+}
+
+notif_tp_locked(){
+    dunstify -a System -t 1200 -h string:x-dunst-stack-tag:touchpad "Touchpad" "Locked"
+}
+
+notif_tp_unlocked(){
+    dunstify -a System -t 1200 -h string:x-dunst-stack-tag:touchpad "Touchpad" "Unlocked"
+}
+
+# :: Restart i3
+
+rel_i3(){
+	i3-msg exit  && dunstify -a System "i3" "Window Manager Restarted"
+}
+
+# :: Dunst 
+
+rel_dunst(){
+	pkill dunst && sleep 1 && dunstify -a System -t 1500 "dunst" "Restarted"
+}
+
+tog_dunst(){
+    if [ $(dunstctl is-paused) = 'true' ]; then dunstctl close-all && dunstify -a System -t 1500 -h string:x-dunst-stack-tag:dnd "dunst" "DND Disabled" && dunstctl set-paused toggle; else dunstify -a System -t 1500 -h string:x-dunst-stack-tag:dnd "dunst" "DND Enabled" && sleep 1.5 && dunstctl set-paused toggle; fi
+}
+
+# :: Backlight
+
+bl_up(){
+    xbacklight -inc 5 && dunstify -a System -t 1000 -h string:x-dunst-stack-tag:backlight -h int:value:$(xbacklight -get) "Backlight: $(xbacklight -get)%" 
+}
+
+bl_down(){
+    xbacklight -dec 5 && dunstify -a System -t 1000 -h string:x-dunst-stack-tag:backlight -h int:value:$(xbacklight -get) "Backlight: $(xbacklight -get)%" 
+}
+
+# :: Main
+
+while getopts ":idncloudtscbv" option; do
+    case $option in
+        i) rel_i3;;
+        d) rel_dunst;;
+        n) tog_dunst;;
+		c) notif_caps;;
+        l) notif_tp_locked;;
+        o) notif_tp_unlocked;;
+		u) vol_up;;
+        d) vol_down;;
+        t) vol_tog;;
+		s) cap_scr;;
+        c) cap_col;;
+		b) bl_up;;
+        v) bl_down;;
+        \?) exit 1;;
+    esac
+done

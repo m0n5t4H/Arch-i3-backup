@@ -1,0 +1,18 @@
+{
+	"icons": [ "awesome-fonts" ],
+	"defaults": {
+		"default-separators": false,
+		"separator-block-width": 0,
+        "prefixfg": "#CDA537"
+	},
+	"cycle": [
+		{
+			"fg": "#4f5253",
+			"bg": "#97a3bd"
+		},
+		{
+			"fg": "#97a3bd",
+			"bg": "#4f5253"
+		}
+	]
+}
